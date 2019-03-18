@@ -8,9 +8,9 @@ public class MinMaxAlgorithm : MoveMaker
 {
     public EvaluationFunction evaluator;
     private UtilityFunction utilityfunc;
-    public int depth = 0;
     private PlayerController MaxPlayer;
     private PlayerController MinPlayer;
+    public int maxDepth = 5;
 
     public MinMaxAlgorithm(PlayerController MaxPlayer, EvaluationFunction eval, UtilityFunction utilf, PlayerController MinPlayer)
     {
@@ -32,7 +32,6 @@ public class MinMaxAlgorithm : MoveMaker
         State newState = new State(this.MaxPlayer, this.MinPlayer);
         // Call the MinMax implementation
         State bestMove = MinMax(newState);
-        this.MaxPlayer.ExpandedNodes = 0;
         // returning the actual state. You should modify this
         //should it return the best move? 
         return bestMove;
@@ -41,7 +40,6 @@ public class MinMaxAlgorithm : MoveMaker
     public State MinMax(State actual)
     {
         float v = valMax(actual);
-        Debug.Log("v = "+v);
         List<State> possibleStates = GeneratePossibleStates(actual);
         foreach (State state in possibleStates) {
             if (evaluator.evaluate(state) == v) {
@@ -53,8 +51,8 @@ public class MinMaxAlgorithm : MoveMaker
 
 
     public float valMax(State estado) {
-        UtilityFunction ut = new UtilityFunction();
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand) {
+        //Debug.Log("DepthEstado = " +estado.depth);
+        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes >  this.MaxPlayer.MaximumNodesToExpand ||  estado.depth > this.maxDepth) {
             return evaluator.evaluate(estado);
         }
         float v = -10000;
@@ -66,7 +64,7 @@ public class MinMaxAlgorithm : MoveMaker
     }
 
     public float valMin(State estado) {
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand) {
+        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || estado.depth > this.maxDepth) {
             return evaluator.evaluate(estado);
         }
         float v = 10000;
