@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DeepCopyExtensions;
+using Random = System.Random;
 
 public class MinMaxAlgorithm : MoveMaker
 {
@@ -10,7 +11,7 @@ public class MinMaxAlgorithm : MoveMaker
     private UtilityFunction utilityfunc;
     private PlayerController MaxPlayer;
     private PlayerController MinPlayer;
-    public int maxDepth = 5;
+    public int maxDepth = 4;
 
     public MinMaxAlgorithm(PlayerController MaxPlayer, EvaluationFunction eval, UtilityFunction utilf, PlayerController MinPlayer)
     {
@@ -39,23 +40,32 @@ public class MinMaxAlgorithm : MoveMaker
 
     public State MinMax(State actual)
     {
-        float v = valMax(actual);
+        List<State> listStates = new List<State>();
+        double v = valMax(actual);
         List<State> possibleStates = GeneratePossibleStates(actual);
         foreach (State state in possibleStates) {
             if (evaluator.evaluate(state) == v) {
-                return state;
+                listStates.Add(state);
             }
+        }    
+        if (listStates.Count!= 1) {
+            Random random = new Random();
+            int n = random.Next(0,listStates.Count);
+            return listStates[n];
         }
-        return null;
+        else
+        {
+            return listStates[0];
+        }
     }
 
 
-    public float valMax(State estado) {
+    public double valMax(State estado) {
         //Debug.Log("DepthEstado = " +estado.depth);
         if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes >  this.MaxPlayer.MaximumNodesToExpand ||  estado.depth > this.maxDepth) {
             return evaluator.evaluate(estado);
         }
-        float v = -10000;
+        double v = Double.NegativeInfinity;
         List<State> possibleStates = this.GeneratePossibleStates(estado);
         foreach (State state in possibleStates) {
             v = Math.Max(v, valMin(state));
@@ -63,11 +73,11 @@ public class MinMaxAlgorithm : MoveMaker
         return v;
     }
 
-    public float valMin(State estado) {
+    public double valMin(State estado) {
         if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || estado.depth > this.maxDepth) {
             return evaluator.evaluate(estado);
         }
-        float v = 10000;
+        double v = Double.PositiveInfinity;
         List<State> possibleStates = this.GeneratePossibleStates(estado);
         foreach (State state in possibleStates) {
             v = Math.Min(v, valMax(state));
