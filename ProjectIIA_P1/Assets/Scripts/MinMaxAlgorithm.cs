@@ -5,10 +5,11 @@ using UnityEngine;
 using DeepCopyExtensions;
 using Random = System.Random;
 
-public class MinMaxAlgorithm : MoveMaker
-{
+public class MinMaxAlgorithm: MoveMaker
+{ 
     public EvaluationFunction evaluator;
-    private UtilityFunction utilityfunc;
+    private UtilityFunction utilityfunc; 
+    public int depth = 0;
     private PlayerController MaxPlayer;
     private PlayerController MinPlayer;
     public int maxDepth = 4;
@@ -24,17 +25,16 @@ public class MinMaxAlgorithm : MoveMaker
     public override State MakeMove()
     {
         // The move is decided by the selected state
-        return GenerateNewState();
+        return GenerateNewState(); 
     }
 
     private State GenerateNewState()
     {
         // Creates initial state
-        State newState = new State(this.MaxPlayer, this.MinPlayer);
+        State newState = new State(this.MaxPlayer, this.MinPlayer); 
         // Call the MinMax implementation
         State bestMove = MinMax(newState);
         // returning the actual state. You should modify this
-        //should it return the best move? 
         return bestMove;
     }
 
@@ -43,43 +43,52 @@ public class MinMaxAlgorithm : MoveMaker
         List<State> listStates = new List<State>();
         double v = valMax(actual);
         List<State> possibleStates = GeneratePossibleStates(actual);
-        foreach (State state in possibleStates) {
-            if (evaluator.evaluate(state) == v) {
+        foreach (State state in possibleStates)
+        {
+            if (evaluator.evaluate(state) == v)
+            {
                 listStates.Add(state);
             }
-        }    
-        if (listStates.Count!= 1) {
+        }
+        if (listStates.Count != 1)
+        {
             Random random = new Random();
-            int n = random.Next(0,listStates.Count);
+            int n = random.Next(0, listStates.Count);
             return listStates[n];
         }
         else
         {
             return listStates[0];
         }
-    }
+    } 
 
 
-    public double valMax(State estado) {
+    public double valMax(State estado)
+    {
         //Debug.Log("DepthEstado = " +estado.depth);
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes >  this.MaxPlayer.MaximumNodesToExpand ||  estado.depth > this.maxDepth) {
+        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || estado.depth > this.maxDepth)
+        {
             return evaluator.evaluate(estado);
         }
         double v = Double.NegativeInfinity;
         List<State> possibleStates = this.GeneratePossibleStates(estado);
-        foreach (State state in possibleStates) {
+        foreach (State state in possibleStates)
+        {
             v = Math.Max(v, valMin(state));
         }
         return v;
     }
 
-    public double valMin(State estado) {
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || estado.depth > this.maxDepth) {
+    public double valMin(State estado)
+    {
+        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || estado.depth > this.maxDepth)
+        {
             return evaluator.evaluate(estado);
         }
         double v = Double.PositiveInfinity;
         List<State> possibleStates = this.GeneratePossibleStates(estado);
-        foreach (State state in possibleStates) {
+        foreach (State state in possibleStates)
+        {
             v = Math.Min(v, valMax(state));
         }
         return v;
@@ -89,7 +98,7 @@ public class MinMaxAlgorithm : MoveMaker
     {
         List<State> states = new List<State>();
         //Generate the possible states available to expand
-        foreach (Unit currentUnit in state.PlayersUnits)
+        foreach(Unit currentUnit in state.PlayersUnits)
         {
             // Movement States
             List<Tile> neighbours = currentUnit.GetFreeNeighbours(state);
@@ -118,7 +127,7 @@ public class MinMaxAlgorithm : MoveMaker
         return states;
     }
 
-    private State MoveUnit(State state, Tile destination)
+    private State MoveUnit(State state,  Tile destination)
     {
         Unit currentUnit = state.unitToPermormAction;
         //First: Update Board
@@ -144,11 +153,17 @@ public class MinMaxAlgorithm : MoveMaker
         attacked.hp += Math.Min(0, (attackedUnitBonus.Item1)) - (currentUnitBonus.Item2 + currentUnit.attack);
         state.unitAttacked = attacked;
 
+        state.board[attacked.x, attacked.y] = attacked;
+        int index = state.AdversaryUnits.IndexOf(attacked);
+        state.AdversaryUnits[index] = attacked;
+
+
+
         if (attacked.hp <= 0)
         {
             //Board update by killing the unit!
             state.board[attacked.x, attacked.y] = null;
-            int index = state.AdversaryUnits.IndexOf(attacked);
+            index = state.AdversaryUnits.IndexOf(attacked);
             state.AdversaryUnits.RemoveAt(index);
 
         }
@@ -158,5 +173,4 @@ public class MinMaxAlgorithm : MoveMaker
         return state;
 
     }
-
 }
