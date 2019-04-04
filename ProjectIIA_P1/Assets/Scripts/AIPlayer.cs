@@ -14,12 +14,14 @@ public class AIPlayer : PlayerController
     public enum TypeStrategy
     {
         MinMax,
-        RandomStrategy,
+        MinMaxCorteAlfaBeta,
+        RandomStrategy
     };
 
     public enum EvaluatationFunc
     {
-        Eval
+        Eval,
+
     };
 
     public enum UtilityFunc
@@ -45,7 +47,7 @@ public class AIPlayer : PlayerController
         switch (evalfunc)
         {
             case EvaluatationFunc.Eval:
-                eval = new EvaluationFunction();
+                eval = new Eval1();
                 break;
             default:
                 Debug.Log("Not an option");
@@ -68,6 +70,9 @@ public class AIPlayer : PlayerController
                 myStrategy = new RandomSolution(this, GameManager.instance.GetAdversary(this));
                 break;
             case TypeStrategy.MinMax:
+                myStrategy = new MinMaxAlgorithm1_0(this, eval, ufunc, GameManager.instance.GetAdversary(this));
+                break;
+            case TypeStrategy.MinMaxCorteAlfaBeta:
                 myStrategy = new MinMaxAlgorithm(this, eval, ufunc, GameManager.instance.GetAdversary(this));
                 break;
             default:

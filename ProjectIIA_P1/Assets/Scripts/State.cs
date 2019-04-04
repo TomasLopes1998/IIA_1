@@ -84,6 +84,28 @@ public class State : System.IComparable
         return isAttack;
     }
 
+    public double getPlayerUnitsHp()
+    {
+        double sum = 0;
+
+        foreach (Unit u in this.PlayersUnits)
+        {
+            sum += u.hp;
+        }
+        return sum;
+    }
+
+    public double getAdversaryUnitsHp()
+    {
+        double sum = 0;
+
+        foreach (Unit u in this.AdversaryUnits)
+        {
+            sum += u.hp;
+        }
+        return sum;
+    }
+
     public int CompareTo(object obj)
     {
         State other = obj as State;
@@ -92,4 +114,5 @@ public class State : System.IComparable
         else
             throw new ArgumentException("Object is not a State");
     }
+
 }

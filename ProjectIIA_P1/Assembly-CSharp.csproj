@@ -62,10 +62,12 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\AIPlayer.cs" />
     <Compile Include="Assets\Scripts\CameraMovement.cs" />
+    <Compile Include="Assets\Scripts\Eval1.cs" />
     <Compile Include="Assets\Scripts\EvaluationFunction.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\HumanPlayer.cs" />
     <Compile Include="Assets\Scripts\MinMaxAlgorithm.cs" />
+    <Compile Include="Assets\Scripts\MinMaxAlgorithm1_0.cs" />
     <Compile Include="Assets\Scripts\MoveMaker.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\RandomSolution.cs" />

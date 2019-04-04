@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DeepCopyExtensions;
-using Random = System.Random;
 
 public class MinMaxAlgorithm: MoveMaker
 { 
@@ -12,7 +11,10 @@ public class MinMaxAlgorithm: MoveMaker
     public int depth = 0;
     private PlayerController MaxPlayer;
     private PlayerController MinPlayer;
-    public int maxDepth = 4;
+    public int maxDepth = 8;
+    public State nextMoveState;
+    public double alfa = Double.NegativeInfinity;
+    public double beta = Double.PositiveInfinity;
 
     public MinMaxAlgorithm(PlayerController MaxPlayer, EvaluationFunction eval, UtilityFunction utilf, PlayerController MinPlayer)
     {
@@ -33,63 +35,66 @@ public class MinMaxAlgorithm: MoveMaker
         // Creates initial state
         State newState = new State(this.MaxPlayer, this.MinPlayer); 
         // Call the MinMax implementation
-        State bestMove = MinMax(newState);
+        State bestMove = AlfaBeta(newState);
         // returning the actual state. You should modify this
         return bestMove;
-    }
-
-    public State MinMax(State actual)
-    {
-        List<State> listStates = new List<State>();
-        double v = valMax(actual);
-        List<State> possibleStates = GeneratePossibleStates(actual);
-        foreach (State state in possibleStates)
-        {
-            if (evaluator.evaluate(state) == v)
-            {
-                listStates.Add(state);
-            }
-        }
-        if (listStates.Count != 1)
-        {
-            Random random = new Random();
-            int n = random.Next(0, listStates.Count);
-            return listStates[n];
-        }
-        else
-        {
-            return listStates[0];
-        }
     } 
 
-
-    public double valMax(State estado)
+    public State AlfaBeta(State actual)
     {
-        //Debug.Log("DepthEstado = " +estado.depth);
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || estado.depth > this.maxDepth)
+        List<State> listStates = new List<State>();
+        double v = valMax(actual,alfa,beta);
+        return this.nextMoveState;
+    } 
+
+    public double valMax(State estado,double alfa,double beta)
+    {
+        State changePers = estado;
+        if (!estado.isRoot)
         {
-            return evaluator.evaluate(estado);
+            changePers = new State(estado);
+        }
+        if (utilityfunc.evaluate(changePers) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || changePers.depth > this.maxDepth)
+        {
+            return evaluator.evaluate(changePers);
         }
         double v = Double.NegativeInfinity;
-        List<State> possibleStates = this.GeneratePossibleStates(estado);
+        List<State> possibleStates = this.GeneratePossibleStates(changePers);
         foreach (State state in possibleStates)
         {
-            v = Math.Max(v, valMin(state));
+            double v_min = valMin(state, alfa, beta);
+            if (v_min>v) {
+                v = v_min;
+                if (estado.isRoot)
+                {
+                    //guardar estado (state)
+                    nextMoveState = state;
+                }
+            }
+            if (v>=beta) {
+                return v;
+            }
+            alfa = Math.Max(alfa,v);
         }
         return v;
     }
 
-    public double valMin(State estado)
+    public double valMin(State estado,double alfa, double beta)
     {
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || estado.depth > this.maxDepth)
+        State changePers = new State(estado);
+        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || changePers.depth > this.maxDepth)
         {
-            return evaluator.evaluate(estado);
+            return evaluator.evaluate(changePers);
         }
         double v = Double.PositiveInfinity;
-        List<State> possibleStates = this.GeneratePossibleStates(estado);
+        List<State> possibleStates = this.GeneratePossibleStates(changePers);
         foreach (State state in possibleStates)
         {
-            v = Math.Min(v, valMax(state));
+            v = Math.Min(v, valMax(state,alfa,beta));
+            if (v<=alfa) {
+                return v;
+            }
+            beta = Math.Min(beta,v);
         }
         return v;
     }
