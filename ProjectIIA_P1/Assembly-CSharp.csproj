@@ -62,7 +62,9 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\AIPlayer.cs" />
     <Compile Include="Assets\Scripts\CameraMovement.cs" />
-    <Compile Include="Assets\Scripts\Eval1.cs" />
+    <Compile Include="Assets\Scripts\Eval.cs" />
+    <Compile Include="Assets\Scripts\Eval2.cs" />
+    <Compile Include="Assets\Scripts\EvalFuncV3.cs" />
     <Compile Include="Assets\Scripts\EvaluationFunction.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\HumanPlayer.cs" />

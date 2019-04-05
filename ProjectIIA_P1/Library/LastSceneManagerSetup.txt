@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/debug.unity
+- path: Assets/Scenes/map0.unity
   isLoaded: 1
   isActive: 1

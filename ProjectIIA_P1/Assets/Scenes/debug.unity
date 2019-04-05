@@ -707,7 +707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd6386391c2704538bbc26e419dd271a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  units: 03000000
+  units: 02000000
   startPositions:
   - {x: 2, y: 2}
   moveDestination: {x: 0, y: 0}
@@ -734,7 +734,7 @@ MonoBehaviour:
   whichplayer: 0
   updateboard: 0
   MaximumNodesToExpand: 100000
-  strategy: 1
+  strategy: 0
   evalfunc: 0
   utilfunc: 0
 --- !u!114 &795041769
@@ -756,7 +756,7 @@ MonoBehaviour:
   moveStart: {x: 0, y: 0}
   theMovement: {x: 0, y: 0, z: 0}
   moveAmount: {x: 0, y: 0, z: 0}
-  moveSpeed: 1.5
+  moveSpeed: 3
   interactive: 0
   agentColor: {r: 0.99474853, g: 1, b: 0.9009434, a: 1}
   UitextInfo: {fileID: 0}

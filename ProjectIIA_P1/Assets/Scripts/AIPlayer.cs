@@ -21,7 +21,8 @@ public class AIPlayer : PlayerController
     public enum EvaluatationFunc
     {
         Eval,
-
+        fullAttackEval,
+        tryHardMode
     };
 
     public enum UtilityFunc
@@ -47,7 +48,13 @@ public class AIPlayer : PlayerController
         switch (evalfunc)
         {
             case EvaluatationFunc.Eval:
-                eval = new Eval1();
+                eval = new Eval();
+                break;
+            case EvaluatationFunc.fullAttackEval:
+                eval = new Eval2();
+                break;
+            case EvaluatationFunc.tryHardMode:
+                eval = new EvalFuncV3();
                 break;
             default:
                 Debug.Log("Not an option");

@@ -12,7 +12,7 @@ public class MinMaxAlgorithm1_0 : MoveMaker
     public int depth = 0;
     private PlayerController MaxPlayer;
     private PlayerController MinPlayer;
-    public int maxDepth = 4;
+    public int maxDepth = 7;
     public State nextMoveState;
 
     public MinMaxAlgorithm1_0(PlayerController MaxPlayer, EvaluationFunction eval, UtilityFunction utilf, PlayerController MinPlayer)
@@ -31,6 +31,7 @@ public class MinMaxAlgorithm1_0 : MoveMaker
 
     private State GenerateNewState()
     {
+        this.MaxPlayer.ExpandedNodes = 0;
         // Creates initial state
         State newState = new State(this.MaxPlayer, this.MinPlayer);
         // Call the MinMax implementation
@@ -43,7 +44,6 @@ public class MinMaxAlgorithm1_0 : MoveMaker
     {
         List<State> listStates = new List<State>();
         double v = valMax(actual);
-        List<State> possibleStates = GeneratePossibleStates(actual);
         return this.nextMoveState;
     }
 
@@ -51,7 +51,12 @@ public class MinMaxAlgorithm1_0 : MoveMaker
     public double valMax(State estado)
     {
         //Debug.Log("DepthEstado = " +estado.depth);
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || estado.depth > this.maxDepth)
+        State changePers = estado;
+        if (!estado.isRoot)
+        {
+            changePers = new State(estado);
+        }
+        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand  || estado.depth > this.maxDepth)
         {
             return evaluator.evaluate(estado);
         }
@@ -60,7 +65,7 @@ public class MinMaxAlgorithm1_0 : MoveMaker
         foreach (State state in possibleStates)
         {
             double v_min = valMin(state);
-            if (v_min>v) {
+            if (v_min>=v) {
                 v = v_min;
                 if (estado.isRoot) {
                     nextMoveState = state;
@@ -72,7 +77,9 @@ public class MinMaxAlgorithm1_0 : MoveMaker
 
     public double valMin(State estado)
     {
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || estado.depth > this.maxDepth)
+        State changePers = new State(estado);
+        
+        if (utilityfunc.evaluate(estado) < 0 || estado.depth > this.maxDepth)
         {
             return evaluator.evaluate(estado);
         }

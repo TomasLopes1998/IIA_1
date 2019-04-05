@@ -11,8 +11,8 @@ public class MinMaxAlgorithm: MoveMaker
     public int depth = 0;
     private PlayerController MaxPlayer;
     private PlayerController MinPlayer;
-    public int maxDepth = 8;
-    public State nextMoveState;
+    public int maxDepth = 10;
+    public State nextMoveState = null;
     public double alfa = Double.NegativeInfinity;
     public double beta = Double.PositiveInfinity;
 
@@ -32,6 +32,7 @@ public class MinMaxAlgorithm: MoveMaker
 
     private State GenerateNewState()
     {
+        this.MaxPlayer.ExpandedNodes = 0;
         // Creates initial state
         State newState = new State(this.MaxPlayer, this.MinPlayer); 
         // Call the MinMax implementation
@@ -44,7 +45,7 @@ public class MinMaxAlgorithm: MoveMaker
     {
         List<State> listStates = new List<State>();
         double v = valMax(actual,alfa,beta);
-        return this.nextMoveState;
+        return nextMoveState;
     } 
 
     public double valMax(State estado,double alfa,double beta)
@@ -63,7 +64,7 @@ public class MinMaxAlgorithm: MoveMaker
         foreach (State state in possibleStates)
         {
             double v_min = valMin(state, alfa, beta);
-            if (v_min>v) {
+            if (v_min>=v) {
                 v = v_min;
                 if (estado.isRoot)
                 {
@@ -82,7 +83,7 @@ public class MinMaxAlgorithm: MoveMaker
     public double valMin(State estado,double alfa, double beta)
     {
         State changePers = new State(estado);
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || changePers.depth > this.maxDepth)
+        if (utilityfunc.evaluate(estado) < 0 || changePers.depth > this.maxDepth)
         {
             return evaluator.evaluate(changePers);
         }
