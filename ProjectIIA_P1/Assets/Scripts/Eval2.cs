@@ -6,25 +6,30 @@ public class Eval2 : EvaluationFunction
 {
 
 
-        public override double evaluate(State s){
-            if (getTeamMaxHp(s.AdversaryUnits)>s.getAdversaryUnitsHp()) {
-                    return 10000;
-            }
-            else {
-                return 0;
-            }
-        }
-
-
-        public double getTeamMaxHp(List<Unit> listUnits)
+    public override double evaluate(State s)
+    {
+        //se o numero de mortos for igual ao numero de adversários!
+        if (nDeadsInTeam(s.AdversaryUnits) == s.AdversaryUnits.Count)
         {
-            double maxHpSum = 0;
-            foreach (Unit unit in listUnits)
-            {
-                maxHpSum += unit.maxHp;
-            }
-            return maxHpSum;
+            return 10000;
         }
+        else
+        {
+            return 0;
+        }
+    }
 
 
+    public int nDeadsInTeam(List<Unit> unitList)
+    {
+        int nDeads = 0;
+        foreach (Unit unit in unitList)
+        {
+            if (unit.IsDead())
+            {
+                nDeads++;
+            }
+        }
+        return nDeads;
+    }
 }

@@ -11,8 +11,9 @@ public class MinMaxAlgorithm: MoveMaker
     public int depth = 0;
     private PlayerController MaxPlayer;
     private PlayerController MinPlayer;
-    public int maxDepth = 10;
-    public State nextMoveState = null;
+    public int maxDepth = 0;
+    public State tempState = null;
+    public State nextMove = null;
     public double alfa = Double.NegativeInfinity;
     public double beta = Double.PositiveInfinity;
 
@@ -43,23 +44,28 @@ public class MinMaxAlgorithm: MoveMaker
 
     public State AlfaBeta(State actual)
     {
-        List<State> listStates = new List<State>();
+        //verifica a profundidade máxima de maneira a verificar todos os nós
+        maxDepth = 1;
         double v = valMax(actual,alfa,beta);
-        return nextMoveState;
+        while (this.MaxPlayer.ExpandedNodes<this.MaxPlayer.MaximumNodesToExpand) {
+            nextMove = tempState;
+            maxDepth++;
+            v = valMax(actual,alfa,beta);
+        }
+        return nextMove;
     } 
 
     public double valMax(State estado,double alfa,double beta)
     {
-        State changePers = estado;
-        if (!estado.isRoot)
-        {
-            changePers = new State(estado);
-        }
-        if (utilityfunc.evaluate(changePers) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || changePers.depth > this.maxDepth)
+        //muda perspectiva
+        State changePers = new State(estado);
+        //verifica se é estado final 
+        if (utilityfunc.evaluate(changePers) < 0 || this.MaxPlayer.ExpandedNodes>this.MaxPlayer.MaximumNodesToExpand ||changePers.depth >= maxDepth)
         {
             return evaluator.evaluate(changePers);
         }
         double v = Double.NegativeInfinity;
+        //gera estados
         List<State> possibleStates = this.GeneratePossibleStates(changePers);
         foreach (State state in possibleStates)
         {
@@ -69,7 +75,7 @@ public class MinMaxAlgorithm: MoveMaker
                 if (estado.isRoot)
                 {
                     //guardar estado (state)
-                    nextMoveState = state;
+                    tempState = state;
                 }
             }
             if (v>=beta) {
@@ -83,7 +89,7 @@ public class MinMaxAlgorithm: MoveMaker
     public double valMin(State estado,double alfa, double beta)
     {
         State changePers = new State(estado);
-        if (utilityfunc.evaluate(estado) < 0 || changePers.depth > this.maxDepth)
+        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand || changePers.depth >= maxDepth)
         {
             return evaluator.evaluate(changePers);
         }

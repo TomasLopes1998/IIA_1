@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DeepCopyExtensions;
-using Random = System.Random;
 
 public class MinMaxAlgorithm1_0 : MoveMaker
 {
@@ -12,8 +11,9 @@ public class MinMaxAlgorithm1_0 : MoveMaker
     public int depth = 0;
     private PlayerController MaxPlayer;
     private PlayerController MinPlayer;
-    public int maxDepth = 7;
-    public State nextMoveState;
+    public int maxDepth = 0;
+    public State tempState = null;
+    public State nextMove = null;
 
     public MinMaxAlgorithm1_0(PlayerController MaxPlayer, EvaluationFunction eval, UtilityFunction utilf, PlayerController MinPlayer)
     {
@@ -41,34 +41,42 @@ public class MinMaxAlgorithm1_0 : MoveMaker
     }
 
     public State MinMax(State actual)
-    {
-        List<State> listStates = new List<State>();
+    { 
+        //Para determinar a profundidade maxima de maneira a expandir todos os nós horizontalmente
+        maxDepth = 1;
         double v = valMax(actual);
-        return this.nextMoveState;
+        while (this.MaxPlayer.ExpandedNodes < this.MaxPlayer.MaximumNodesToExpand)
+        {
+            nextMove = tempState;
+            maxDepth++;
+            v = valMax(actual);
+        }
+        return nextMove;
     }
 
 
     public double valMax(State estado)
     {
-        //Debug.Log("DepthEstado = " +estado.depth);
-        State changePers = estado;
-        if (!estado.isRoot)
-        {
-            changePers = new State(estado);
-        }
-        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand  || estado.depth > this.maxDepth)
+        //muda a perspectiva de jogo (o Código fornecido já verifica se o estado é raiz)
+        State changePers = new State(estado);
+        //se é estado terminal
+        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand  || estado.depth >= maxDepth)
         {
             return evaluator.evaluate(estado);
         }
+
         double v = Double.NegativeInfinity;
+        //verifica as hipoteses
         List<State> possibleStates = this.GeneratePossibleStates(estado);
         foreach (State state in possibleStates)
         {
             double v_min = valMin(state);
+            //devolve o máximo!
             if (v_min>=v) {
                 v = v_min;
+                //se for raiz atualiza o estado
                 if (estado.isRoot) {
-                    nextMoveState = state;
+                    tempState = state;
                 }
             }
         }
@@ -77,17 +85,22 @@ public class MinMaxAlgorithm1_0 : MoveMaker
 
     public double valMin(State estado)
     {
+        //muda perspectiva de jogo
         State changePers = new State(estado);
-        
-        if (utilityfunc.evaluate(estado) < 0 || estado.depth > this.maxDepth)
+        //verifica se é estado Final
+        if (utilityfunc.evaluate(estado) < 0 || this.MaxPlayer.ExpandedNodes > this.MaxPlayer.MaximumNodesToExpand ||  estado.depth >=maxDepth)
         {
             return evaluator.evaluate(estado);
         }
         double v = Double.PositiveInfinity;
+        //gera estados
         List<State> possibleStates = this.GeneratePossibleStates(estado);
         foreach (State state in possibleStates)
         {
-            v = Math.Min(v, valMax(state));
+            double vMax = valMax(state);
+            if (v<=vMax) {
+                v = vMax;
+            }
         }
         return v;
     }

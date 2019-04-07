@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\CameraMovement.cs" />
     <Compile Include="Assets\Scripts\Eval.cs" />
     <Compile Include="Assets\Scripts\Eval2.cs" />
+    <Compile Include="Assets\Scripts\Eval4Units.cs" />
     <Compile Include="Assets\Scripts\EvalFuncV3.cs" />
     <Compile Include="Assets\Scripts\EvaluationFunction.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />

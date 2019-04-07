@@ -8,7 +8,7 @@ public class Eval : EvaluationFunction
     public override double evaluate(State s)
     {
 
-        if (s.getPlayerUnitsHp() >= getTeamMaxHp(s.PlayersUnits) && s.getAdversaryUnitsHp() < getTeamMaxHp(s.AdversaryUnits))
+        if (s.getPlayerUnitsHp() >= getTeamMaxHp(s.PlayersUnits))
         {
             return 200;
         }

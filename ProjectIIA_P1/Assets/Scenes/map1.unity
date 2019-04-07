@@ -735,9 +735,9 @@ MonoBehaviour:
   doattack: 0
   whichplayer: 0
   updateboard: 0
-  MaximumNodesToExpand: 100000
+  MaximumNodesToExpand: 10000
   strategy: 1
-  evalfunc: 0
+  evalfunc: 3
   utilfunc: 0
 --- !u!114 &795041769
 MonoBehaviour:

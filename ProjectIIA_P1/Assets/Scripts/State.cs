@@ -84,23 +84,32 @@ public class State : System.IComparable
         return isAttack;
     }
 
+    //retorna a vida da equipa do jogador
     public double getPlayerUnitsHp()
     {
         double sum = 0;
 
         foreach (Unit u in this.PlayersUnits)
         {
+            if (u.hp<=0) {
+                Debug.Log("WhatsUppppppp?!  I'm Dead!!!!");
+            }
             sum += u.hp;
+            
         }
         return sum;
     }
 
+    //retorna a vida dos adversários 
     public double getAdversaryUnitsHp()
     {
         double sum = 0;
 
         foreach (Unit u in this.AdversaryUnits)
         {
+            if (u.hp<=0) {
+                Debug.Log("Enemy Down!!!!!");
+            }
             sum += u.hp;
         }
         return sum;

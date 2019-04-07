@@ -22,7 +22,8 @@ public class AIPlayer : PlayerController
     {
         Eval,
         fullAttackEval,
-        tryHardMode
+        tryHardMode,
+        nUnitsDeadValorizedFirst
     };
 
     public enum UtilityFunc
@@ -55,6 +56,9 @@ public class AIPlayer : PlayerController
                 break;
             case EvaluatationFunc.tryHardMode:
                 eval = new EvalFuncV3();
+                break;
+            case EvaluatationFunc.nUnitsDeadValorizedFirst:
+                eval = new Eval4Units();
                 break;
             default:
                 Debug.Log("Not an option");
@@ -116,7 +120,7 @@ public class AIPlayer : PlayerController
 
         if (!computing && base.updateboard)
         {
-            Debug.Log("[AI] performing move! computing:" + computing + " updateboard:" + base.updateboard);
+        
             UpdateBoard(currentmove);
         }
     }
