@@ -7,12 +7,13 @@ public class Eval : EvaluationFunction
     
     public override double evaluate(State s)
     {
-
+        //se a nossa vida maior ou igual à equipa adversária
         if (s.getPlayerUnitsHp() >= getTeamMaxHp(s.PlayersUnits))
         {
             return 200;
         }
-        else if (s.getPlayerUnitsHp() >= getTeamMaxHp(s.PlayersUnits))
+        //se se a nossa vida está igual ao maximo
+        else if (s.getPlayerUnitsHp() >= getTeamMaxHp(s.PlayersUnits) && s.PlayersUnits.Count>0)
         {
             return 100;
         }

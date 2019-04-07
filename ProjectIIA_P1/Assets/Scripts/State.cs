@@ -92,7 +92,6 @@ public class State : System.IComparable
         foreach (Unit u in this.PlayersUnits)
         {
             if (u.hp<=0) {
-                Debug.Log("WhatsUppppppp?!  I'm Dead!!!!");
             }
             sum += u.hp;
             
@@ -108,7 +107,6 @@ public class State : System.IComparable
         foreach (Unit u in this.AdversaryUnits)
         {
             if (u.hp<=0) {
-                Debug.Log("Enemy Down!!!!!");
             }
             sum += u.hp;
         }

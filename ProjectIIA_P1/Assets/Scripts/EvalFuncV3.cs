@@ -7,19 +7,18 @@ public class EvalFuncV3 : EvaluationFunction
 
     public override double evaluate(State s)
     {
-        int nDeadsEnemy = nDeadsInTeam(s.AdversaryUnits);
         //Verifica se a nossa vida é maior ou igual à nossa 
         if (s.getPlayerUnitsHp() >= s.getAdversaryUnitsHp())
         {
             //verificamos se a vida dos adversários é menor ou igual a 0 (se o jogo acabou)
             if (s.getAdversaryUnitsHp() <= 0)
             {
-                return 10000000000;
+                return 10000000;
             }
             //verificamos o numero de mortos 
-            else if (nDeadsEnemy>0)
+            else if (s.AdversaryUnits.Count > 0)
             {
-                return nDeadsEnemy * 1000;
+                return 100000 / s.AdversaryUnits.Count;
             }
             //se perdeu vida
             else if (s.getAdversaryUnitsHp() < getTeamMaxHp(s.AdversaryUnits))
@@ -42,16 +41,13 @@ public class EvalFuncV3 : EvaluationFunction
         }
         //Nossa vida menor!
         else
-        {   //se 0 é mau para nos
-            if (s.getPlayerUnitsHp() <= 0)
-            {
+        {   
+            //we dead
+            if (s.PlayersUnits.Count == 0 ) {
                 return 0;
             }
-            else if (nDeadsEnemy == s.AdversaryUnits.Count) {
-                return 1000000;
-            }
-            //se a nossa vida for menor, mas está no maximo
-            else if (s.getPlayerUnitsHp() >= getTeamMaxHp(s.PlayersUnits)) {
+            //se a nossa vida for menor, mas está no maximo e o nosso numero de unidades é maior que 0
+            else if (s.getPlayerUnitsHp() >= getTeamMaxHp(s.PlayersUnits) && s.PlayersUnits.Count>0) {
                 return 100000;
             }
             //verifica os bonus
@@ -69,20 +65,7 @@ public class EvalFuncV3 : EvaluationFunction
             }
         }
     }
-
-    //retorna o numero de mortes numa equipa
-    public int nDeadsInTeam(List<Unit> unitList)
-    {
-        int nDeads = 0;
-        foreach (Unit unit in unitList)
-        {
-            if (unit.IsDead()) { 
-
-                nDeads++;
-            }
-        }
-        return nDeads;
-    }
+    
 
     //vida maxima de uma equipa
     public double getTeamMaxHp(List<Unit> listUnits)

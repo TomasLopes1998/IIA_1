@@ -22,8 +22,7 @@ public class AIPlayer : PlayerController
     {
         Eval,
         fullAttackEval,
-        tryHardMode,
-        nUnitsDeadValorizedFirst
+        tryHardMode
     };
 
     public enum UtilityFunc
@@ -56,9 +55,6 @@ public class AIPlayer : PlayerController
                 break;
             case EvaluatationFunc.tryHardMode:
                 eval = new EvalFuncV3();
-                break;
-            case EvaluatationFunc.nUnitsDeadValorizedFirst:
-                eval = new Eval4Units();
                 break;
             default:
                 Debug.Log("Not an option");

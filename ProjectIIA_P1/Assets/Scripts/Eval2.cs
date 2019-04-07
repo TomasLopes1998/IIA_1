@@ -9,7 +9,7 @@ public class Eval2 : EvaluationFunction
     public override double evaluate(State s)
     {
         //se o numero de mortos for igual ao numero de adversários!
-        if (nDeadsInTeam(s.AdversaryUnits) == s.AdversaryUnits.Count)
+        if (s.AdversaryUnits.Count == 0)
         {
             return 10000;
         }
@@ -17,19 +17,5 @@ public class Eval2 : EvaluationFunction
         {
             return 0;
         }
-    }
-
-
-    public int nDeadsInTeam(List<Unit> unitList)
-    {
-        int nDeads = 0;
-        foreach (Unit unit in unitList)
-        {
-            if (unit.IsDead())
-            {
-                nDeads++;
-            }
-        }
-        return nDeads;
     }
 }
